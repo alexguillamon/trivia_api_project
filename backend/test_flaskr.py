@@ -130,6 +130,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(len(data["questions"]), total_questions)
         self.assertEqual(data["type"], "Art")
 
+    def test_get_questions_search(self):
+        search_term = "title"
+        get_response = self.client().get(
+            f"/questions?search_term={search_term}",
+        )
+        data = get_response.get_json()
+        questions = Question.query.filter(
+            Question.question.ilike(f"%{search_term}%")
+        ).all()
+
+        self.assertEqual(get_response.status_code, 200)
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["total_questions"], len(questions))
+        self.assertEqual(len(data["questions"]), len(questions))
+        self.assertEqual(data["current_category"], 1)
+        self.assertEqual(data["search_term"], search_term)
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
