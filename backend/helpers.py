@@ -14,5 +14,5 @@ def get_categories_helper(page=1):
         "status": "success",
         "current_page": pagination.page,
         "total_categories": pagination.total,
-        "categories": [item.format() for item in pagination.items],
+        "categories": {item.id: item.type for item in pagination.items},
     }
