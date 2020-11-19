@@ -51,7 +51,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["status"], "success")
         self.assertEqual(data["total_categories"], Category.query.count())
         self.assertEqual(len(data["categories"]), 6)
-        self.assertEqual(data["categories"][0]["type"], "Science")
+        self.assertEqual(data["categories"]["1"], "Science")
 
     def test_get_questions(self):
         page = 2
@@ -62,7 +62,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["status"], "success")
         self.assertEqual(data["total_questions"], Question.query.count())
         self.assertEqual(len(data["questions"]), 9)
-        self.assertEqual(data["categories"][0]["type"], "Science")
+        self.assertEqual(data["categories"]["1"], "Science")
         self.assertEqual(data["questions"][0]["id"], 15)
 
     def test_post_questions(self):
