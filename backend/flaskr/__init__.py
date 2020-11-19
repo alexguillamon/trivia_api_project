@@ -95,15 +95,19 @@ def create_app(test_config=None):
             db.session.rollback()
         finally:
             db.session.close()
-        return jsonify(
-            {
-                "success": "success",
-                "id": question_id,
-                "question": question.question,
-                "answer": question.answer,
-                "category": question.category,
-                "difficulty": question.difficulty,
-            }
+        return (
+            abort(500)
+            if error
+            else jsonify(
+                {
+                    "success": "success",
+                    "id": question_id,
+                    "question": question.question,
+                    "answer": question.answer,
+                    "category": question.category,
+                    "difficulty": question.difficulty,
+                }
+            )
         )
 
     """
