@@ -115,15 +115,28 @@ The API will return three error types when requests fail:
 - Request Arguments:
 
   - Optional:
-    `?page=<int:page_number>`
 
-    `?search_term=<str:search_term>`
+    ```
+    ?page=<int:page_number>
+    ```
+
+    ```
+    ?search_term=<str:search_term>
+    ```
 
 - Returns: An list of questions together with the same object returned by `get /categories`
 
 - Request:
-  `curl http://127.0.0.1:5000/questions` - Note: `page` argument will default to 1
-  `curl http://127.0.0.1:5000/questions?page=3`
+
+  ```
+  curl http://127.0.0.1:5000/questions
+  ```
+
+  - Note: `page` argument will default to 1
+
+  ```
+  curl http://127.0.0.1:5000/questions?page=3
+  ```
 
 - Response:
 
@@ -174,8 +187,6 @@ The API will return three error types when requests fail:
       "total_questions": 19
   }
   ```
-
-  - Request:
 
   - Request:
     `curl http://127.0.0.1:5000/questions?search_term=world`
