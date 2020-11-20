@@ -36,12 +36,16 @@ class TriviaTestCase(unittest.TestCase):
         "answer": "Alejandro",
         "difficulty": 2,
         "category": 1,
+        "extra_cat": "nothing",
     }
 
-    """
-    TODO
-    Write at least one test for each test for successful operation and for expected errors.
-    """
+    error_question = {
+        "question": "who am I?",
+        "answer": "Alejandro",
+        "difficulty": 2,
+    }
+
+    error_quiz = {"this is not a": "correct usage"}
 
     def test_get_categories(self):
         res = self.client().get("/categories")
@@ -164,6 +168,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["total_questions"], len(questions))
         self.assertEqual(data["question"], questions[0].format())
         self.assertEqual(data["current_category"], category)
+
+    def test_404_error(self):
+        res_delete = self.client().delete("/question/1000")
+        res_get = self.client().get("/categories/2000/questions")
+
+        self.assertEqual(res_delete.status_code, 404)
+        self.assertEqual(res_get.status_code, 404)
+
+    def test_405_error(self):
+        res = self.client().get("/questions/1")
+        self.assertEqual(res.status_code, 405)
+
+    def test_400_error(self):
+        res = self.client().post("/questions", json=self.error_question)
+        self.assertEqual(res.status_code, 400)
+        res = self.client().post("/quizzes", json=self.error_quiz)
+        self.assertEqual(res.status_code, 400)
 
 
 # Make the tests conveniently executable
