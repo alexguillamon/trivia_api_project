@@ -162,12 +162,6 @@ def create_app(test_config=None):
             }
         )
 
-    """
-    @TODO: 
-    Create error handlers for all expected errors 
-    including 404 and 422. 
-    """
-
     @app.errorhandler(400)
     def bad_request(e):
         return (
