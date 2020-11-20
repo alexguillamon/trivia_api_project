@@ -40,7 +40,7 @@ def create_app(test_config=None):
                 Question.question.ilike(f"%{search_term}%")
             ).all()
             response = {
-                "status": "success",
+                "success": True,
                 "total_questions": len(questions),
                 "questions": [question.format() for question in questions],
                 "current_category": 1,
@@ -50,7 +50,7 @@ def create_app(test_config=None):
             pagination = Question.query.paginate(page, QUESTIONS_PER_PAGE)
             categories_query = get_categories_helper()
             response = {
-                "status": "success",
+                "success": True,
                 "current_page": pagination.page,
                 "total_questions": pagination.total,
                 "questions": [item.format() for item in pagination.items],
@@ -72,7 +72,7 @@ def create_app(test_config=None):
             db.session.rollback()
         finally:
             db.session.close()
-        return jsonify({"status": "success", "question_id": question_id})
+        return jsonify({"success": True, "question_id": question_id})
 
     @app.route("/questions", methods=["POST"])
     def create_question():
@@ -107,7 +107,7 @@ def create_app(test_config=None):
             if error
             else jsonify(
                 {
-                    "status": "success",
+                    "success": True,
                     "id": question_id,
                     "question": question.question,
                     "answer": question.answer,
@@ -125,7 +125,7 @@ def create_app(test_config=None):
             return abort(404)
         return jsonify(
             {
-                "status": "success",
+                "success": True,
                 "questions": [question.format() for question in questions],
                 "total_questions": len(questions),
                 "current_category": category_id,
@@ -155,7 +155,7 @@ def create_app(test_config=None):
         ).all()
         return jsonify(
             {
-                "status": "success",
+                "success": True,
                 "question": None if len(questions) < 1 else questions[0].format(),
                 "total_questions": len(questions),
                 "current_category": data["quiz_category"],
@@ -165,7 +165,7 @@ def create_app(test_config=None):
     @app.errorhandler(400)
     def bad_request(e):
         return (
-            jsonify({"error": "400", "message": "bad request", "status": "failed"}),
+            jsonify({"error": "400", "message": "bad request", "success": False}),
             400,
         )
 
@@ -173,7 +173,7 @@ def create_app(test_config=None):
     def not_found(e):
         return (
             jsonify(
-                {"error": "404", "message": "resource not found", "status": "failed"}
+                {"error": "404", "message": "resource not found", "success": False}
             ),
             404,
         )
@@ -185,7 +185,7 @@ def create_app(test_config=None):
                 {
                     "error": "405",
                     "message": "method not allowed, refer to the documentation for list of allowed methods",
-                    "status": "failed",
+                    "success": False,
                 }
             ),
             405,
@@ -198,7 +198,7 @@ def create_app(test_config=None):
                 {
                     "error": "422",
                     "message": "Unprocessable entity, please format your data in as explained in the api documentation",
-                    "status": "failed",
+                    "success": False,
                 }
             ),
             422,
@@ -211,7 +211,7 @@ def create_app(test_config=None):
                 {
                     "error": "500",
                     "message": "That is weird... Something went wrong on our side and the server failed to process the request",
-                    "status": "failed",
+                    "success": False,
                 }
             ),
             500,

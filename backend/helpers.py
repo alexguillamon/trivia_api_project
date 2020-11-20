@@ -11,7 +11,7 @@ def get_categories_helper(page=1):
         QUESTIONS_PER_PAGE,
     )
     return {
-        "status": "success",
+        "success": True,
         "current_page": pagination.page,
         "total_categories": pagination.total,
         "categories": {item.id: item.type for item in pagination.items},
