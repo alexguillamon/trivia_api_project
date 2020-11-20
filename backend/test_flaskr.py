@@ -147,6 +147,24 @@ class TriviaTestCase(unittest.TestCase):
         self.assertEqual(data["current_category"], 1)
         self.assertEqual(data["search_term"], search_term)
 
+    def test_post_quizzes(self):
+        previous_questions = []
+        category = {"id": 3, "type": "geography"}
+        post_response = self.client().post(
+            "/quizzes",
+            json={"previous_questions": previous_questions, "quiz_category": category},
+        )
+        data = post_response.get_json()
+        questions = Question.query.filter(
+            Question.id.notin_(previous_questions), Question.category == category["id"]
+        ).all()
+
+        self.assertEqual(post_response.status_code, 200)
+        self.assertEqual(data["status"], "success")
+        self.assertEqual(data["total_questions"], len(questions))
+        self.assertEqual(data["question"], questions[0].format())
+        self.assertEqual(data["current_category"], category)
+
 
 # Make the tests conveniently executable
 if __name__ == "__main__":
