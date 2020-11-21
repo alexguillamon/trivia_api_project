@@ -223,7 +223,7 @@ The API will return three error types when requests fail:
   }
   ```
 
-#### POST /questions
+#### POST `/questions`
 
 - Creates a new question using the submitted question, answer, difficulty, and category. using the submitted title, author and rating.
 - The request body should be a JSON object and come in the following schema:
@@ -242,12 +242,12 @@ The API will return three error types when requests fail:
 - Returns an JSON object:
   ```
   {
-  "answer": String,
-  "category": Int,
-  "difficulty": Int,
-  "id": Int,
-  "question": String,
-  "success": Boolean
+      "answer": String,
+      "category": Int,
+      "difficulty": Int,
+      "id": Int,
+      "question": String,
+      "success": Boolean
   }
   ```
 - Request:
@@ -266,76 +266,123 @@ The API will return three error types when requests fail:
   }
   ```
 
-#### DELETE /books/{book_id}
+#### DELETE `/questions/{int:question_id}`
 
-- General:
-  - Deletes the book of the given ID if it exists. Returns the id of the deleted book, success value, total books, and book list based on current page number to update the frontend.
-- `curl -X DELETE http://127.0.0.1:5000/books/16?page=2`
+- Deletes the question matching the id provided else returns a 404 error. Returns the `question_id` of the deleted question.
 
-```
-{
-  "books": [
-    {
-      "author": "Gina Apostol",
-      "id": 9,
-      "rating": 5,
-      "title": "Insurrecto: A Novel"
-    },
-    {
-      "author": "Tayari Jones",
-      "id": 10,
-      "rating": 5,
-      "title": "An American Marriage"
-    },
-    {
-      "author": "Jordan B. Peterson",
-      "id": 11,
-      "rating": 5,
-      "title": "12 Rules for Life: An Antidote to Chaos"
-    },
-    {
-      "author": "Kiese Laymon",
-      "id": 12,
-      "rating": 1,
-      "title": "Heavy: An American Memoir"
-    },
-    {
-      "author": "Emily Giffin",
-      "id": 13,
-      "rating": 4,
-      "title": "All We Ever Wanted"
-    },
-    {
-      "author": "Jose Andres",
-      "id": 14,
-      "rating": 4,
-      "title": "We Fed an Island"
-    },
-    {
-      "author": "Rachel Kushner",
-      "id": 15,
-      "rating": 1,
-      "title": "The Mars Room"
-    }
-  ],
-  "deleted": 16,
-  "success": true,
-  "total_books": 15
-}
-```
+- Request:
+  ```
+  curl -X DELETE http://127.0.0.1:5000/questions/25
+  ```
+- Response:
+  ```
+  {
+    "question_id": 25,
+    "success": true
+  }
+  ```
 
-#### PATCH /books/{book_id}
+#### GET `/categories/{int:category_id}/questions`
 
-- General:
-  - If provided, updates the rating of the specified book. Returns the success value and id of the modified book.
-- `curl http://127.0.0.1:5000/books/15 -X PATCH -H "Content-Type: application/json" -d '{"rating":"1"}'`
+- Fetches a list of questions within the requested category.
 
-```
-{
-  "id": 15,
-  "success": true
-}
-```
+- Request:
+  ```
+  curl -X GET http://127.0.0.1:5000/categories/2/questions
+  ```
+- Response:
+  ```
+  {
+    "current_category": 2,
+    "questions": [
+        {
+            "answer": "Escher",
+            "category": 2,
+            "difficulty": 1,
+            "id": 16,
+            "question": "Which Dutch graphic artist\u2013initials M C was a creator of optical illusions?"
+        },
+            {
+            "answer": "Mona Lisa",
+            "category": 2,
+            "difficulty": 3,
+            "id": 17,
+            "question": "La Giaconda is better known as what?"
+        },
+        {
+            "answer": "One",
+            "category": 2,
+            "difficulty": 4,
+            "id": 18,
+            "question": "How many paintings did Van Gogh sell in his lifetime?"
+        },
+        {
+            "answer": "Jackson Pollock",
+            "category": 2,
+            "difficulty": 2,
+            "id": 19,
+            "question": "Which American artist was a pioneer of Abstract Expressionism, and a leading exponent of action painting?"
+        }
+    ],
+    "success": true,
+    "total_questions": 4,
+    "type": "Art"
+  }
+  ```
+
+#### POST `/quizzes`
+
+- Fetches a new random question from the selected to category. The returned question will be either a new question or a Null if there are no more questions.
+- The request body should be a JSON object and come in the following schema:
+
+  ```
+  {
+      "previous_questions": {"type": "list"}, // list of id's of the questions that should not be sent as an option
+      "quiz_category": {
+          "type": "dict",
+          "require_all": True,
+          "schema": {
+              "id": {"type": "integer"},
+          },
+      },
+  }
+  ```
+
+  - Note: all fields are required or else an error response will be returned
+
+- Returns an JSON object:
+  ```
+  {
+      "answer": String,
+      "category": Int,
+      "difficulty": Int,
+      "id": Int,
+      "question": String,
+      "success": Boolean
+  }
+  ```
+- Request:
+  ```
+  curl http://127.0.0.1:5000/quizzes -X POST -H "Content-Type: application/json" -d '{"previous_questions":[], "quiz_category":{"id":1}}'
+  ```
+- Response:
+
+  ```
+  {
+    "current_category": {
+        "id": 1
+    },
+    "question": {
+        "answer": "The Liver",
+        "category": 1,
+        "difficulty": 4,
+        "id": 20,
+        "question": "What is the heaviest organ in the human body?"
+    },
+    "success": true,
+    "total_questions": 3
+  }
+  ```
 
 ## Deployment N/A
 
